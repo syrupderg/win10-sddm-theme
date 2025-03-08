@@ -34,7 +34,6 @@ Item {
         z: 1
 
         Image {
-            id: bg1
             anchors.fill: parent
             width: parent.width
             height: parent.height
@@ -280,7 +279,6 @@ Item {
                 id: userDelegate
 
                 FocusScope {
-
                     anchors.centerIn: parent
                     name: (model.realName === "") ? model.name : model.realName
                     icon: "/var/lib/AccountsService/icons/" + model.name
@@ -324,13 +322,14 @@ Item {
                     }
 
                     Rectangle {
-                        width: parent.width
-                        height: parent.height
+                        width: Screen.width
+                        height: Screen.height
                         color: "transparent"
 
                         Image {
-                            width: Screen.width
-                            height: Screen.height
+                            anchors.fill: parent
+                            width: parent.width
+                            height: parent.height
                             source: config.background
 
                             Rectangle {
@@ -340,8 +339,14 @@ Item {
                             }
                         }
 
-                        x: -(Screen.width / 2) + 11
-                        y: -(Screen.width / 3) + 40
+                        x: {
+                            if(Screen.width < 1681 )
+                                -Screen.width / 2 + 35
+                            else
+                                -Screen.width / 2 + 11
+                        }
+
+                        y: -Screen.height/2
                     }
 
                     Image {
