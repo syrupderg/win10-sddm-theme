@@ -42,7 +42,7 @@ Item {
             Rectangle {
                 width: parent.width
                 height: parent.height
-                color: "#75000000"
+                color: "blue"
             }
         }
     }
@@ -340,11 +340,15 @@ Item {
                         }
 
                         x: {
-                            if(Screen.width < 1681 )
-                                -Screen.width / 2 + 35
+                            if(1680 === Screen.width)
+                                -Screen.width / 2 + 28
+                            else if(1600 === Screen.width)
+                                -Screen.width / 2 + 34
                             else
                                 -Screen.width / 2 + 11
                         }
+
+                        // bad idea? yeah but it will work for most of the people. try to come up with something better than this.
 
                         y: -Screen.height/2
                     }
