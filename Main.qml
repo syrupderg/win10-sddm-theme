@@ -522,9 +522,15 @@ Item {
 
                         x: -135
 
-                        validator: IntValidator { // this dude allows only numbers to be typed, if something goes wrong, blame this dude.
-                            bottom: 8
-                            top: 1000
+                        property int pinSize: config.PinSize
+
+                        function calculateTopValue(size) {
+                            return parseInt('9'.repeat(size));
+                        }
+
+                        validator: IntValidator {
+                            bottom: 1
+                            top: calculateTopValue(pinSize)
                         }
 
                         anchors {
@@ -544,7 +550,12 @@ Item {
                                 revealButtonPin.visible = false
                             }
 
-                            if (passwordFieldPin.length > 3 ) {
+                            if (config.PinSize == passwordFieldPin.length) {
+                                falsePass.visible = true
+                                passwordField.visible = false
+                                passwordField.enabled = false
+                                passwordFieldPin.visible = false
+                                passwordFieldPin.enabled = false
                                 rightPanel.visible = false
                                 leftPanel.visible = false
                                 sddm.login(model.name, password, session)
