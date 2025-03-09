@@ -42,7 +42,7 @@ Item {
             Rectangle {
                 width: parent.width
                 height: parent.height
-                color: "blue"
+                color: "transparent"
             }
         }
     }
