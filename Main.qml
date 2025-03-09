@@ -494,7 +494,7 @@ Item {
 
                                 onClicked: {
                                     loginButtonTip.hide()
-                                    falsePass.visible = true
+                                    truePass.visible = true
                                     rightPanel.visible = false
                                     leftPanel.visible = false
                                     passwordField.visible = false
