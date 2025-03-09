@@ -441,6 +441,8 @@ Item {
                             sddm.login(model.name, password, session)
 
                             bootani.start()
+
+                            capsOn.z = -1
                         }
 
                         Keys.onEnterPressed: {
@@ -452,6 +454,8 @@ Item {
                             sddm.login(model.name, password, session)
 
                             bootani.start()
+
+                            capsOn.z = -1
                         }
 
                         LoginBg {
@@ -490,7 +494,7 @@ Item {
 
                                 onClicked: {
                                     loginButtonTip.hide()
-                                    truePass.visible = true
+                                    falsePass.visible = true
                                     rightPanel.visible = false
                                     leftPanel.visible = false
                                     passwordField.visible = false
@@ -498,6 +502,8 @@ Item {
                                     sddm.login(model.name, password, session)
 
                                     bootani.start()
+
+                                    capsOn.z = -1
                                 }
                             }
 
@@ -564,7 +570,6 @@ Item {
                         visible: false
 
                         anchors {
-                            horizontalCenter: parent.horizontalCenter
                             topMargin: 25
                             top: name.bottom
                         }
@@ -1375,6 +1380,7 @@ Item {
                     CapsOn {
                         id: capsOn
                         visible: false
+                        z: 2
 
                         state: keyboard.capsLock ? "on" : "off"
 
@@ -1392,6 +1398,7 @@ Item {
                                 PropertyChanges {
                                     target: capsOn
                                     visible: false
+                                    z: -1
                                 }
                             }
                         ]
