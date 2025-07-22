@@ -1,7 +1,7 @@
-import QtQuick 2.15
-import QtQuick.Layouts 2.15
-import QtQuick.Controls 2.15
-import Qt5Compat.GraphicalEffects
+import QtQuick
+import QtQuick.Effects
+import QtQuick.Layouts
+import QtQuick.Controls
 
 Rectangle {
     id: container
@@ -70,11 +70,13 @@ Rectangle {
             y: 5
         }
 
-        OpacityMask {
-            id: img
+        MultiEffect {
             anchors.fill: icon
             source: icon
+            maskEnabled: true
             maskSource: mask
+            maskThresholdMin: 0.5
+            maskSpreadAtMin: 1.0
         }
 
         Item {
@@ -82,6 +84,7 @@ Rectangle {
             width: icon.width
             height: icon.height
             layer.enabled: true
+            layer.smooth: true
             visible: false
 
             Rectangle {
@@ -104,8 +107,8 @@ Rectangle {
             color: "white"
 
             anchors {
-                verticalCenter: img.verticalCenter
-                left: img.right
+                verticalCenter: icon.verticalCenter
+                left: icon.right
                 leftMargin: 12
             }
         }
