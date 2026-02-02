@@ -8,7 +8,8 @@ TextField {
     selectByMouse: true
     placeholderText: "Password"
 
-    property alias text: passwordField.text
+    // no idea why i added this before but keeping it just to be safe
+    // property alias text: passwordField.text
 
     echoMode: TextInput.Password ? TextInput.Password : TextInput.Normal
     selectionColor: config.color

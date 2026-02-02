@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Effects
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.VirtualKeyboard
 import "Components"
 
 Item {
@@ -21,7 +22,7 @@ Item {
 
     FontLoader {
         id: iconfont
-        source: Qt.resolvedUrl("fonts/SegMDL2.ttf")
+        source: Qt.resolvedUrl("fonts/iconfont.ttf")
     }
 
     Rectangle {
@@ -42,7 +43,7 @@ Item {
             Rectangle {
                 width: parent.width
                 height: parent.height
-                color: "transparent"
+                color: "#75000000"
             }
         }
     }
@@ -264,8 +265,6 @@ Item {
         }
     }
 
-
-
     Item {
         id: centerPanel
         anchors.verticalCenter: parent.verticalCenter
@@ -275,6 +274,188 @@ Item {
         z: 2
 
         Item {
+            Item {
+                id: keyboardContainer
+                parent: root
+                z: 100
+
+                width: Screen.width / 2
+                height: inputPanel.height
+
+                x: (Screen.width - width) / 2
+                y: (Screen.height / 2) + 150
+
+                Rectangle {
+                    id: dragBar
+                    height: 30
+                    width: parent.width
+                    color: "white"
+                    x: 8
+
+                    anchors.bottom: inputPanel.top
+                    anchors.bottomMargin: 0
+
+                    state: "off"
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.SizeAllCursor
+
+                        drag.target: keyboardContainer
+                        drag.axis: Drag.XAndYAxis
+                        drag.minimumX: -Screen.width
+                        drag.maximumX: Screen.width
+                        drag.minimumY: -Screen.height
+                        drag.maximumY: Screen.height
+                    }
+
+                    Image {
+                        source: "Components/osk-icon.png"
+                        width: 17
+                        height: 17
+                        anchors.left: parent.left
+                        anchors.leftMargin: 10
+                        anchors.top: parent.top
+                        anchors.topMargin: 8
+                    }
+
+                    Text {
+                        text: "On-Screen Keyboard"
+                        anchors.left: parent.left
+                        anchors.leftMargin: 35
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: "black"
+                        font.pointSize: 9
+                        font.family: Qt.resolvedUrl("../fonts") ? "Segoe UI" : segoeui.name
+                        renderType: Text.NativeRendering
+                    }
+
+                    Rectangle {
+                        id: closeBtn
+                        width: 46
+                        height: parent.height - 1
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+
+                        color: closeT.containsMouse ? "#C42B1C" : "transparent"
+
+                        Text {
+                            text: "×"
+                            color: closeT.containsMouse ? "white" : "#040404"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.top: parent.top
+                            anchors.topMargin: -6
+                            anchors.bottomMargin: 1
+                            font.pixelSize: 27
+                            font.family: Qt.resolvedUrl("../fonts") ? "Segoe UI Light" : segoeuil.name
+                            renderType: Text.NativeRendering
+                        }
+
+                        MouseArea {
+                            id: closeT
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            preventStealing: true
+
+                            onClicked: {
+                                keyboardText.text = "off"
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        id: maxBtn
+                        width: 46
+                        height: parent.height - 1
+                        anchors.right: closeBtn.left
+                        anchors.top: parent.top
+
+                        Text {
+                            text: "▢"
+                            color: "#80686868"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.top: parent.top
+                            anchors.topMargin: 5
+                            font.pixelSize: 13
+                            font.family: Qt.resolvedUrl("../fonts") ? "Segoe UI Light" : segoeuil.name
+                            renderType: Text.NativeRendering
+                        }
+
+                        MouseArea {
+                            id: maxT
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            preventStealing: true
+                        }
+                    }
+
+                    Rectangle {
+                        id: minBtn
+                        width: 46
+                        height: parent.height - 1
+                        anchors.right: maxBtn.left
+                        anchors.top: parent.top
+
+                        color: minT.containsMouse ? "#E9E9E9" : "transparent"
+
+                        Text {
+                            text: "–"
+                            color: "#040404"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.top: parent.top
+                            anchors.bottomMargin: 1
+                            font.pixelSize: 20
+                            font.family: Qt.resolvedUrl("../fonts") ? "Segoe UI Light" : segoeuil.name
+                            renderType: Text.NativeRendering
+                        }
+
+                        MouseArea {
+                            id: minT
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            preventStealing: true
+
+                            onClicked: {
+                                keyboardText.text = "off"
+                            }
+                        }
+                    }
+
+                    states: [
+                        State {
+                            name: "on"
+                            when: sessionText.text  === "on"
+                            PropertyChanges { target: dragBar; visible: true; enabled: true }
+                        },
+                        State {
+                            name: "off"
+                            when: sessionText.text  === "off"
+                            PropertyChanges { target: dragBar; visible: false; enabled: false }
+                        }
+                    ]
+                }
+
+                InputPanel {
+                    id: inputPanel
+                    width: parent.width
+                    x: 8
+
+                    states: [
+                        State {
+                            name: "on"
+                            when: sessionText.text === "on"
+                            PropertyChanges { target: inputPanel; visible: true; enabled: true }
+                        },
+                        State {
+                            name: "off"
+                            when: sessionText.text === "off"
+                            PropertyChanges { target: inputPanel; visible: false; enabled: false }
+                        }
+                    ]
+                }
+            }
             Component {
                 id: userDelegate
 
@@ -293,8 +474,10 @@ Item {
 
                     property int session: sessionPanel.session
 
+                    visible: ListView.isCurrentItem
+                    enabled: ListView.isCurrentItem
+                    height: 0
                     width: 296
-                    height: 500
 
                     Connections {
                       target: sddm
@@ -319,38 +502,6 @@ Item {
                         }
 
                         function onLoginSucceeded() {} //broken, but this time it's not my fault. see https://github.com/sddm/sddm/issues/1960
-                    }
-
-                    Rectangle {
-                        width: Screen.width
-                        height: Screen.height
-                        color: "transparent"
-
-                        Image {
-                            anchors.fill: parent
-                            width: parent.width
-                            height: parent.height
-                            source: config.background
-
-                            Rectangle {
-                                width: parent.width
-                                height: parent.height
-                                color: "#75000000"
-                            }
-                        }
-
-                        x: {
-                            if(1680 === Screen.width)
-                                -Screen.width / 2 + 28
-                            else if(1600 === Screen.width)
-                                -Screen.width / 2 + 34
-                            else
-                                -Screen.width / 2 + 11
-                        }
-
-                        // bad idea? yeah but it will work for most of the people. try to come up with something better than this.
-
-                        y: -Screen.height/2
                     }
 
                     Image {
@@ -437,6 +588,7 @@ Item {
                         }
 
                         Keys.onReturnPressed: {
+                            keyboardText.text = "off"
                             truePass.visible = true
                             passwordField.visible = false
                             passwordFieldPin.visible = false
@@ -450,6 +602,7 @@ Item {
                         }
 
                         Keys.onEnterPressed: {
+                            keyboardText.text = "off"
                             truePass.visible = true
                             passwordField.visible = false
                             passwordFieldPin.visible = false
@@ -497,6 +650,7 @@ Item {
                                 }
 
                                 onClicked: {
+                                    keyboardText.text = "off"
                                     loginButtonTip.hide()
                                     truePass.visible = true
                                     rightPanel.visible = false
@@ -529,12 +683,11 @@ Item {
                         property int pinSize: config.PinSize
 
                         function calculateTopValue(size) {
-                            return parseInt('9'.repeat(size));
+                            return Math.pow(10, size) - 1;
                         }
 
-                        validator: IntValidator {
-                            bottom: 1
-                            top: calculateTopValue(pinSize)
+                        validator: RegularExpressionValidator {
+                            regularExpression: new RegExp("\\d{1," + passwordFieldPin.pinSize + "}")
                         }
 
                         anchors {
@@ -554,7 +707,8 @@ Item {
                                 revealButtonPin.visible = false
                             }
 
-                            if (config.PinSize == passwordFieldPin.length) {
+                            if (config.PinSize === passwordFieldPin.length) {
+                                keyboardText.text = "off"
                                 falsePass.visible = true
                                 passwordField.visible = false
                                 passwordField.enabled = false
@@ -619,7 +773,7 @@ Item {
 
                             FontLoader {
                                 id: animFont
-                                source: Qt.resolvedUrl("fonts/SegoeBoot-Semilight.woff")
+                                source: Qt.resolvedUrl("fonts/segoeuiboot.woff")
                             }
 
                             anchors.left: welcome.right
@@ -649,8 +803,6 @@ Item {
                                 }
                             }
                         }
-
-
                     }
 
                     CapsOn {
@@ -733,11 +885,407 @@ Item {
             id: powerPanel
         }
 
-        SessionPanel {
+        Item {
             id: sessionPanel
+
+            property int session: sessionList.currentIndex
+
+            implicitHeight: sessionButton.height
+            implicitWidth: sessionButton.width
 
             anchors {
                 right: powerPanel.left
+            }
+
+            Text {
+                id: sessionText
+                text: keyboardText.text
+                visible: false
+            }
+
+            DelegateModel {
+                id: sessionWrapper
+                model: sessionModel
+
+                delegate: ItemDelegate {
+                    id: sessionEntry
+                    width: parent.width
+                    height: 36
+                    highlighted: sessionList.currentIndex == index
+
+                    contentItem: Text {
+                        renderType: Text.NativeRendering
+                        font.family: Qt.resolvedUrl("../fonts") ? "Segoe UI" : segoeui.name
+                        font.pointSize: 10
+                        verticalAlignment: Text.AlignVCenter
+                        color: "black"
+                        text: name
+
+                        Text {
+                            id: offon
+                            text: "Off"
+                            color: "black"
+                            font.family: Qt.resolvedUrl("../fonts") ? "Segoe UI" : segoeui.name
+                            font.weight: Font.Bold
+                            font.pointSize: 10
+                            renderType: Text.NativeRendering
+
+                            anchors {
+                                verticalCenter: parent.verticalCenter
+                                bottom: parent.top
+                                bottomMargin: 5
+                            }
+                        }
+
+                        Button {
+                            id: sessionLever
+                            width: 46
+                            height: 15
+                            z: 3
+
+                            anchors {
+                                top: parent.bottom
+                                topMargin: 7
+                                right: parent.right
+                                rightMargin: 7
+                            }
+
+                            background: Rectangle {
+                                id: sessionLeverBackground
+                                color: "#A6A6A6"
+                                border.color: "white"
+                                border.width: 1
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+
+                                onClicked: {
+                                    sessionList.currentIndex = index
+                                }
+                            }
+
+                            Button {
+                                id: leftblackLever
+                                width: 12
+                                height: 19
+
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    left: parent.left
+                                    leftMargin: -2
+                                }
+
+                                background: Rectangle {
+                                    color: "black"
+                                }
+
+                                MouseArea {
+                                    anchors.fill: parent
+
+                                    onClicked: {
+                                        sessionList.currentIndex = index
+                                    }
+                                }
+                            }
+
+                            Button {
+                                id: rightblackLever
+                                width: 12
+                                height: 19
+                                visible: false
+
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    right: parent.right
+                                    rightMargin: -2
+                                }
+
+                                background: Rectangle {
+                                    color: "black"
+                                }
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+
+                                onClicked: {
+                                    sessionList.currentIndex = index
+                                }
+                            }
+                        }
+
+                        Button {
+                            width: 50
+                            height: 19
+
+                            anchors {
+                                top: parent.bottom
+                                topMargin: 5
+                                right: parent.right
+                                rightMargin: 5
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+
+                                onClicked: {
+                                    sessionList.currentIndex = index
+                                }
+                            }
+
+                            background: Rectangle {
+                                id: leverBack
+                                color: "#A6A6A6"
+                            }
+                        }
+                    }
+
+                    background: Rectangle {
+                        id: sessionEntryBackground
+                        color: "transparent"
+                    }
+
+                    states: [
+                        State {
+                            name: "focused"
+                            when: sessionEntry.focus
+
+                            PropertyChanges {
+                                target: sessionLeverBackground
+                                color: config.color
+                            }
+
+                            PropertyChanges {
+                                target: rightblackLever
+                                    visible: true
+                            }
+
+                            PropertyChanges {
+                                target: leftblackLever
+                                visible: false
+                            }
+                            PropertyChanges {
+                                target: offon
+                                text: "On"
+                            }
+                        },
+
+                        State {
+                            name: "hovered"
+                            when: sessionLever.hovered
+
+                            PropertyChanges {
+                                target: sessionLeverBackground
+                                color: "#B5B5B5"
+                            }
+                        }
+                    ]
+                }
+            }
+
+            Button {
+                id: sessionButton
+                height: 50
+                width: 50
+                hoverEnabled: true
+
+                Text {
+                    color: "white"
+                    font.family: Qt.resolvedUrl("../fonts") ? "Segoe MDL2 Assets" : iconfont.name
+                    text: String.fromCodePoint(0xe776)
+                    renderType: Text.NativeRendering
+                    font.pointSize: sessionButton.height / 2
+                    anchors.centerIn: sessionButton
+                }
+
+                ToolTip {
+                    id: sessionButtonTip
+                    delay: 1000
+                    timeout: 4800
+                    leftPadding: 9
+                    rightPadding: 9
+                    topPadding: 7
+                    bottomPadding: 7
+                    y: sessionButton.height + 5
+                    z: 2
+                    visible: sessionButton.hovered
+                    contentItem: Text {
+                        text: "Session"
+                        font.family: Qt.resolvedUrl("../fonts") ? "Segoe UI" : segoeui.name
+                        renderType: Text.NativeRendering
+                        color: "white"
+                    }
+                    background: Rectangle {
+                        color: "#2A2A2A"
+                        border.width: 1
+                        border.color: "#1A1A1A"
+                    }
+                }
+
+                background: Rectangle {
+                    id: sessionButtonBackground
+                    color: "transparent"
+                }
+
+                states: [
+                    State {
+                        name: "pressed"
+                        when: sessionButton.down
+
+                        PropertyChanges {
+                            target: sessionButtonBackground
+                            color: "#33FFFFFF"
+                        }
+                    },
+
+                    State {
+                        name: "hovered"
+                        when: sessionButton.hovered
+
+                        PropertyChanges {
+                            target: sessionButtonBackground
+                            color: "#1AFFFFFF"
+                        }
+                    },
+
+                    State {
+                        name: "selection"
+                        when: sessionPopup.visible
+
+                        PropertyChanges {
+                            target: sessionButtonBackground
+                            color: "transparent"
+                        }
+                    }
+                ]
+
+                onClicked: {
+                    sessionPopup.visible ? sessionPopup.close() : sessionPopup.open()
+                    sessionPopup.visible === sessionPopup.open ; sessionButton.state = "selection"
+                    sessionButtonTip.hide()
+                }
+            }
+
+            Popup {
+                id: sessionPopup
+                width: 175
+                height: 107
+                x: Math.round((parent.width - width) / 2)
+                y: Math.round(-sessionButton.height -(sessionPopup.height) + 45)
+                z: 3
+                topPadding: 5
+                bottomPadding: 15
+                leftPadding: 15
+                rightPadding: 15
+                background: Rectangle {
+                    color: "white"
+                    border.width: 1
+                    border.color: "black"
+
+                    Button  {
+                        id: screenKeyboard
+                        width: parent.width - 2
+                        height: 41
+                        x: 1
+                        y: 65
+                        z: 3
+                        visible: true // i still don't but i figured something out :3
+                        enabled: true
+
+                        Text {
+                            color: "black"
+                            text: "On-Screen Keyboard"
+                            renderType: Text.NativeRendering
+                            font.family: Qt.resolvedUrl("../fonts") ? "Segoe UI" : segoeui.name
+                            font.pointSize: 10
+                            anchors {
+                                verticalCenter: parent.verticalCenter
+                                left: parent.left
+                                leftMargin: 20
+                            }
+                        }
+
+                        Text {
+                            id: keyboardText
+                            visible: false
+                            color: "transparent"
+                            text: "off"
+                        }
+
+                        states: [
+                            State {
+                                name: "hovered"
+                                when: screenKeyboard.hovered
+
+                                PropertyChanges {
+                                    target: screenKeyboardBackground
+                                    color: "#30000000"
+                                }
+                            },
+
+                            State {
+                                name: "on"
+
+                                PropertyChanges {
+                                    target: keyboardText
+                                    text: "on"
+                                }
+                            },
+
+                            State {
+                                name: "off"
+
+                                PropertyChanges {
+                                    target: keyboardText
+                                    text: "off"
+                                }
+                            }
+                        ]
+
+                        background: Rectangle {
+                            id: screenKeyboardBackground
+                            color: "transparent"
+                        }
+
+                        onClicked: {
+                            if (keyboardText.text === "off") {
+                                keyboardText.text = "on"
+                            }
+                            else {
+                                keyboardText.text = "off"
+                            }
+                        }
+                    }
+                }
+
+                contentItem: ListView {
+                    id: sessionList
+                    implicitHeight: contentHeight + 20
+                    model: sessionWrapper
+                    currentIndex: sessionModel.lastIndex
+                    clip: true
+                    spacing: 25
+                    interactive: false
+                }
+
+                enter: Transition {
+                    NumberAnimation {
+                        property: "opacity"
+                        from: 0
+                        to: 1
+                        easing.type: Easing.OutCirc
+                    }
+                }
+
+                exit: Transition {
+                    NumberAnimation {
+                        property: "opacity"
+                        from: 1
+                        to: 0
+                        easing.type: Easing.OutCirc
+                    }
+                }
             }
         }
 

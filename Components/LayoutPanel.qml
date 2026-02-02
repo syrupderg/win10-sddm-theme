@@ -7,14 +7,82 @@ Item {
 
     signal valueChanged(int id)
 
-    // This gives an error but works, applying what the error says causes it to not work so this stays like that for a while.
-    onValueChanged: {
+    // all of this is because keyboard.layouts[keyboard.currentLayout].shortName doesn't work btw. https://github.com/sddm/sddm/issues/2153
+    function getLayoutCode(longName) {
+        if (!longName) return "??";
+
+        var cleanName = longName.toLowerCase().trim();
+
+        var match = cleanName.match(/\(([^)]+)\)/);
+        if (match) {
+            return match[1].toUpperCase().substring(0, 2);
+        }
+
+        const map = {
+            "american": "US",
+            "arabic": "SA",
+            "australian": "AU",
+            "austrian": "AT",
+            "belgian": "BE",
+            "brazilian": "BR",
+            "british": "GB",
+            "bulgarian": "BG",
+            "canadian": "CA",
+            "chinese": "CN",
+            "croatian": "HR",
+            "czech": "CZ",
+            "danish": "DK",
+            "dutch": "NL",
+            "english": "US",
+            "estonian": "EE",
+            "farsi": "IR",
+            "filipino": "PH",
+            "finnish": "FI",
+            "french": "FR",
+            "german": "DE",
+            "greek": "GR",
+            "hebrew": "IL",
+            "hindi": "IN",
+            "hungarian": "HU",
+            "icelandic": "IS",
+            "indonesian": "ID",
+            "irish": "IE",
+            "italian": "IT",
+            "japanese": "JP",
+            "korean": "KR",
+            "latvian": "LV",
+            "lithuanian": "LT",
+            "malay": "MY",
+            "mexican": "MX",
+            "newzealand": "NZ",
+            "norwegian": "NO",
+            "polish": "PL",
+            "portuguese": "PT",
+            "romanian": "RO",
+            "russian": "RU",
+            "serbian": "RS",
+            "slovak": "SK",
+            "slovenian": "SI",
+            "spanish": "ES",
+            "swedish": "SE",
+            "swiss": "CH",
+            "thai": "TH",
+            "turkish": "TR",
+            "ukrainian": "UA",
+            "vietnamese": "VN"
+        };
+
+        if (map[cleanName]) return map[cleanName];
+
+        return longName.substring(0, 2).toUpperCase();
+    }
+
+    onValueChanged: (id) => {
         keyboard.currentLayout = id
     }
 
     DelegateModel {
         id: layoutWrapper
-
         model: keyboard.layouts
         delegate: ItemDelegate {
             id: layoutEntry
@@ -47,33 +115,23 @@ Item {
                         color: config.color
                     }
                 },
-
                 State {
                     name: "hovered"
                     when: layoutEntry.hovered
                     PropertyChanges {
-                    target: layoutEntryBackground
-                    color: "#343434"
+                        target: layoutEntryBackground
+                        color: "#343434"
                     }
                 }
             ]
 
             MouseArea {
                 anchors.fill: parent
-
-                onPressed: {
-                    layoutEntryBackground.color = "#35FFFFFF"
-                }
-
+                onPressed: layoutEntryBackground.color = "#35FFFFFF"
                 onReleased: {
-                    if (layoutEntry.focus) {
-                        layoutEntryBackground.color = config.color
-                    }
-                    else {
-                        layoutEntryBackground.color = "#1E1E1E"
-                    }
+                    if (layoutEntry.focus) layoutEntryBackground.color = config.color
+                    else layoutEntryBackground.color = "#1E1E1E"
                 }
-
                 onClicked: {
                     layoutList.currentIndex = index
                     layoutPopup.close()
@@ -91,10 +149,11 @@ Item {
 
         Text {
             color: "white"
-            text: keyboard.layouts[keyboard.currentLayout].shortName
-            font.family: Qt.resolvedUrl("fonts/segoeui.ttf")
-            font.capitalization: Font.AllUppercase
+            text: getLayoutCode(keyboard.layouts[keyboard.currentLayout].longName)
+
+            font.family: Qt.resolvedUrl("../fonts") ? "Segoe UI" : segoeui.name
             renderType: Text.NativeRendering
+            font.capitalization: Font.AllUppercase
             font.pointSize: 12
 
             anchors {
@@ -105,7 +164,6 @@ Item {
 
         ToolTip {
             id: layoutButtonTip
-
             delay: 1000
             timeout: 4800
             leftPadding: 9
@@ -139,32 +197,23 @@ Item {
             State {
                 name: "pressed"
                 when: layoutButton.down
-                PropertyChanges {
-                    target: layoutButtonBackground
-                    color: "#33FFFFFF"
-                }
+                PropertyChanges { target: layoutButtonBackground; color: "#33FFFFFF" }
             },
             State {
                 name: "hovered"
                 when: layoutButton.hovered
-                PropertyChanges {
-                    target: layoutButtonBackground
-                    color: "#1AFFFFFF"
-                }
+                PropertyChanges { target: layoutButtonBackground; color: "#1AFFFFFF" }
             },
             State {
                 name: "selection"
                 when: layoutPopup.visible
-                PropertyChanges {
-                    target: layoutButtonBackground
-                    color: "transparent"
-                }
+                PropertyChanges { target: layoutButtonBackground; color: "transparent" }
             }
         ]
 
         onClicked: {
             layoutPopup.visible ? layoutPopup.close() : layoutPopup.open()
-            layoutPopup.visible === layoutPopup.open ; layoutButton.state = "selection"
+            layoutButton.state = "selection"
             layoutButtonTip.hide()
         }
     }
@@ -193,21 +242,10 @@ Item {
         }
 
         enter: Transition {
-            NumberAnimation {
-                property: "opacity"
-                from: 0
-                to: 1
-                easing.type: Easing.OutCirc
-            }
+            NumberAnimation { property: "opacity"; from: 0; to: 1; easing.type: Easing.OutCirc }
         }
-
         exit: Transition {
-            NumberAnimation {
-                property: "opacity"
-                from: 1
-                to: 0
-                easing.type: Easing.OutCirc
-            }
+            NumberAnimation { property: "opacity"; from: 1; to: 0; easing.type: Easing.OutCirc }
         }
     }
 }

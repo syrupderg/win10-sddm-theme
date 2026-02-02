@@ -109,6 +109,8 @@ FocusScope {
             onClicked: {
                 falsePass.visible = false
 
+                keyboardText.text = "off"
+
                 passwordField.visible = config.PinMode === "off" ? true : false
                 passwordField.enabled = config.PinMode === "off" ? true : false
                 passwordField.focus = config.PinMode === "off" ? true : false
@@ -130,6 +132,8 @@ FocusScope {
             Keys.onReturnPressed: {
                 falsePass.visible = false
 
+                keyboardText.text = "off"
+
                 passwordField.visible = config.PinMode === "off" ? true : false
                 passwordField.enabled = config.PinMode === "off" ? true : false
                 passwordField.focus = config.PinMode === "off" ? true : false
@@ -150,6 +154,8 @@ FocusScope {
 
             Keys.onEnterPressed: {
                 falsePass.visible = false
+
+                keyboardText.text = "off"
 
                 passwordField.visible = config.PinMode === "off" ? true : false
                 passwordField.enabled = config.PinMode === "off" ? true : false
