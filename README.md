@@ -41,13 +41,14 @@ Missing features from Windows 10 login screen that's planned to be added in the 
     [Segoe MDL2](https://github.com/syncfusion/xamarin-demos/raw/master/Forms/TabView/TabView.UWP/Assets/Fonts/Segoe%20MDL2%20Assets.ttf)
       font to use this SDDM theme!
 
-You only need to have SDDM installed and don't need any other extra Qt 5 or 6 plugins to install!
+No extra Qt packages are required for 6 and higher versions of KDE Plasma and Qt.
+On XFCE or other desktop environments might require additional Qt packages. (Currently I do not know which ones are required.)
+
+> [!IMPORTANT]
+>5 and lower versions of KDE Plasma/Qt might require additional Qt packages but there are no quarantee of the theme working properly. Please do NOT open an issue if you are using older versions of KDE Plasma/Qt.
+
 
 ## Installation
-
-> [!CAUTION]
->This theme is being developed and tested on KDE Plasma! Only Qt 6 and higher versions are supported!
->On paper, this theme should be able to work on other desktop environments and other Qt versions but you might need to install a Qt package for it.
 
 You can use installation script to install this theme, [required fonts](#requirements) and [Windows Cursors](https://github.com/birbkeks/windows-cursors)! 
 
