@@ -14,16 +14,13 @@ read -p ":: " input
 
 function sddm() {
 
-    sudo curl --no-clobber --output-dir "/usr/share/sddm/themes" -O https://github.com/syrupderg/win10-sddm-theme/releases/download/1.2/win10-sddm-theme.tar.gz
+    sudo curl --no-clobber --output-dir "/usr/share/sddm/themes" -LO https://github.com/syrupderg/win10-sddm-theme/releases/download/1.2/win10-sddm-theme.tar.gz
 
     sudo tar -xzf /usr/share/sddm/themes/win10-sddm-theme.tar.gz -C /usr/share/sddm/themes
 
     sudo rm -rf /usr/share/sddm/themes/win10-sddm-theme.tar.gz
 
-    sudo rm -rf /usr/share/sddm/themes/win10-sddm-theme/.git/
-
     edit
-    wayland
 }
 
 function edit() {
@@ -67,7 +64,7 @@ EOF
 }
 
 function cursor() {
-    sudo curl --no-clobber --output-dir "/usr/share/icons" -O https://github.com/syrupderg/windows-cursors/releases/download/1.0/windows-cursors.tar.gz
+    sudo curl --no-clobber --output-dir "/usr/share/icons" -LO https://github.com/syrupderg/windows-cursors/releases/download/1.0/windows-cursors.tar.gz
 
     sudo tar -xzf /usr/share/icons/windows-cursors.tar.gz -C /usr/share/icons/
 
@@ -129,6 +126,7 @@ elif [[ $input == "1 2 3" ]]; then
 
     sddm
     cursor
+    wayland
 
     echo "Done."
 
@@ -136,11 +134,22 @@ elif [[ $input == "1 2 3" ]]; then
 elif [[ $input == "2 3" ]]; then
 
     echo ""
-    echo "Installing Windows 10 SDDM Theme and fixing SDDM for Wayland and adding On Screen Keyboard support..."
+    echo "Windows Cursor Icons and fixing SDDM for Wayland and adding On Screen Keyboard support..."
     echo ""
 
     sddm
     cursor
+
+    echo "Done."
+
+elif [[ $input == "1 3" ]]; then
+
+    echo ""
+    echo "Installing Windows 10 SDDM Theme and fixing SDDM for Wayland and adding On Screen Keyboard support..."
+    echo ""
+
+    sddm
+    wayland
 
     echo "Done."
 
