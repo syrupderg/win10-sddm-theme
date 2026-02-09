@@ -3,8 +3,8 @@
 echo ""
 
 echo " (1) - Install Windows 10 SDDM Theme"
-echo " (2) - Install Required Segoe UI fonts"
-echo " (3) - Install Windows Cursor Icons"
+echo " (2) - Install Windows Cursor Icon"
+echo " (3) - Fix SDDM for Wayland and add On Screen Keyboard support"
 
 echo ""
 
@@ -14,7 +14,7 @@ read -p ":: " input
 
 function sddm() {
 
-    sudo wget -P /usr/share/sddm/themes https://github.com/birbkeks/win10-sddm-theme/releases/download/1.2/win10-sddm-theme.tar.gz -nc
+    sudo curl --no-clobber --output-dir "/usr/share/sddm/themes" -O https://github.com/syrupderg/win10-sddm-theme/releases/download/1.2/win10-sddm-theme.tar.gz
 
     sudo tar -xzf /usr/share/sddm/themes/win10-sddm-theme.tar.gz -C /usr/share/sddm/themes
 
@@ -23,6 +23,7 @@ function sddm() {
     sudo rm -rf /usr/share/sddm/themes/win10-sddm-theme/.git/
 
     edit
+    wayland
 }
 
 function edit() {
@@ -46,20 +47,27 @@ Current=win10-sddm-theme
     fi
 }
 
-function font() {
-    # Not installed locally because I can't stand to see this font on Github and other websites, I couldn't find a way to disable this font for browser. I'm used to see Noto Sans too much I guess. You can go to this fonts files and install it locally if you want to and this theme will still work.
+function wayland() {
 
-    sudo wget -P /usr/share/sddm/themes/win10-sddm-theme/fonts https://github.com/birbkeks/win10-sddm-theme/raw/main/fonts/segoeui.ttf -nc
+    if [ ! -f "/etc/sddm.conf.d/10-wayland.conf" ]; then
 
-    sudo wget -P /usr/share/sddm/themes/win10-sddm-theme/fonts https://github.com/birbkeks/win10-sddm-theme/raw/main/fonts/segoeuil.ttf -nc
+    sudo mkdir -p /etc/sddm.conf.d
 
-    sudo wget -P /usr/share/sddm/themes/win10-sddm-theme/fonts https://github.com/birbkeks/win10-sddm-theme/raw/main/fonts/SegMDL2.ttf -nc
+    sudo tee "/etc/sddm.conf.d/10-wayland.conf" > /dev/null <<EOF
+[General]
+DisplayServer=wayland
+GreeterEnvironment=QT_WAYLAND_SHELL_INTEGRATION=layer-shell
 
-    sudo wget -P /usr/share/sddm/themes/win10-sddm-theme/fonts https://github.com/birbkeks/win10-sddm-theme/raw/main/fonts/SegoeBoot-Semilight.woff -nc
+[Wayland]
+CompositorCommand=kwin_wayland --drm --no-lockscreen --no-global-shortcuts --locale1 --inputmethod plasma-keyboard
+EOF
+
+    fi
+
 }
 
 function cursor() {
-    sudo wget -P /usr/share/icons https://github.com/birbkeks/windows-cursors/releases/download/1.0/windows-cursors.tar.gz -nc
+    sudo curl --no-clobber --output-dir "/usr/share/icons" -O https://github.com/syrupderg/windows-cursors/releases/download/1.0/windows-cursors.tar.gz
 
     sudo tar -xzf /usr/share/icons/windows-cursors.tar.gz -C /usr/share/icons/
 
@@ -85,17 +93,17 @@ if [[ $input == "1" ]]; then
 elif [[ $input == "2" ]]; then
 
     echo ""
-    echo "Required Segoe UI fonts..."
+    echo "Installing Windows Cursor Icons..."
     echo ""
 
-    font
+    cursor
 
     echo "Done."
 
 elif [[ $input == "3" ]]; then
 
     echo ""
-    echo "Install Windows Cursor Icons..."
+    echo "Fixing SDDM for Wayland and adding On Screen Keyboard support..."
     echo ""
 
     cursor
@@ -105,33 +113,33 @@ elif [[ $input == "3" ]]; then
 elif [[ $input == "1 2" ]]; then
 
     echo ""
-    echo "Install Windows Cursor Icons and Required Segoe UI fonts..."
+    echo "Installing Windows 10 SDDM Theme and Windows Cursor Icons..."
     echo ""
 
     sddm
-    font
+    cursor
 
     echo "Done."
 
 elif [[ $input == "1 2 3" ]]; then
 
     echo ""
-    echo "Install Windows Cursor Icons, Required Segoe UI fonts and Windows Cursor Icons..."
+    echo "Installing Windows 10 SDDM Theme, Windows Cursor Icons and fixing SDDM for Wayland and adding On Screen Keyboard support..."
     echo ""
 
     sddm
-    font
     cursor
 
     echo "Done."
 
+
 elif [[ $input == "2 3" ]]; then
 
     echo ""
-    echo "Required Segoe UI fonts and Windows Cursor Icons..."
+    echo "Installing Windows 10 SDDM Theme and fixing SDDM for Wayland and adding On Screen Keyboard support..."
     echo ""
 
-    font
+    sddm
     cursor
 
     echo "Done."
